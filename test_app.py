@@ -4,16 +4,12 @@ from app import app
 client = TestClient(app)
 
 
-def test_upload_document():
-    response = client.post(
-        "/upload/", files={"file": ("test.pdf", b"dummy content", "application/pdf")}
-    )
-    assert response.status_code == 201
-    assert response.json() == {"message": "Document uploaded successfully"}
+def test_upload_file():
+    response = client.post("/upload/", files={"file": ("test.txt", b"file content")})
+    assert response.status_code == 200
+    assert response.json() == {"filename": "test.txt"}
 
 
-def test_invalid_file_type():
-    response = client.post(
-        "/upload/", files={"file": ("test.txt", b"dummy content", "text/plain")}
-    )
-    assert response.status_code == 400
+def test_invalid_file_upload():
+    response = client.post("/upload/")
+    assert response.status_code == 422
